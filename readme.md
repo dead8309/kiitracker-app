@@ -27,7 +27,7 @@ seamlessly.
 - [x] Collaborative Scheduling
 - [x] Material You Design
 - [x] Dark Mode
-- [] Widget Support
+- [ ] Widget Support
 
 ## Download
 
