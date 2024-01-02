@@ -1,6 +1,5 @@
 package com.kiitracker.ui.components.icons
 
-import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
@@ -11,7 +10,8 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 
-internal val Icons.Github: ImageVector
+
+internal val Github: ImageVector
     get() {
         if (_github != null) {
             return _github!!

@@ -240,7 +240,7 @@ fun AboutSection() {
                 modifier = Modifier.clip(RoundedCornerShape(15.dp))
             )
             SettingItem(
-                icon = Icons.Github,
+                icon = Github,
                 title = "GitHub",
                 description = "View the source code",
                 onClick = {
