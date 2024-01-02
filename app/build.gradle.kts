@@ -17,7 +17,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -26,17 +26,9 @@ android {
         buildConfigField("int", "VERSION_CODE", "$versionCode")
         buildConfigField("String", "VERSION_NAME", "\"$versionName\"")
     }
-    signingConfigs {
-        create("release") {
-            storeFile = file("C:\\Users\\KIIT0001\\Downloads\\Kizzy.keystore")
-            storePassword = "monu8309"
-            keyAlias = "kizzy"
-            keyPassword = "monu8309"
-        }
-    }
+
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
