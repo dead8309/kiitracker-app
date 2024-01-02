@@ -29,9 +29,9 @@ process and help you make the most out of the app.
       latest version of the app.
     - Download and install the app on your device.
 
-5.**Login to the App:**
-- Open the app and sign up with the same Google account you used to register on the website.
-- Your schedule will be automatically synced with the app.
+5. **Login to the App:**
+    - Open the app and sign up with the same Google account you used to register on the website.
+    - Your schedule will be automatically synced with the app.
 
 Congratulations! You are now set up and ready to make the most of KIITracker. If you have any questions or encounter any
 issues, please contact us by opening an [issue](https://github.com/dead8309/kiitracker-app/issues/new) on GitHub. Happy scheduling! 🚀
