@@ -1,6 +1,5 @@
 package com.kiitracker.ui.screens.sign_in
 
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

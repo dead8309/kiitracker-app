@@ -4,7 +4,6 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 import java.util.Locale
 

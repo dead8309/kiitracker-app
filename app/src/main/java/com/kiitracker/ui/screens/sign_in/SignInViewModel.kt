@@ -23,10 +23,6 @@ class SignInViewModel @Inject constructor(): ViewModel() {
         _state.update { SignInState() }
     }
 
-    fun updateFailedSignInAttempts(by: Int) {
-        _state.update { it.copy(failedSignInAttempts = it.failedSignInAttempts + by) }
-    }
-
     fun triggerLoadingState() {
         _state.update { it.copy(
             isLoading = !it.isLoading
