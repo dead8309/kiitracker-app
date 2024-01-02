@@ -13,6 +13,10 @@ data class User(
     val lastLogin: Date,
     val routine: Routine,
 ) {
+    /**
+     * Default constructor is required by Firestore.
+     */
+    @Suppress("unused")
     constructor() : this("", Date(), Routine())
 }
 
@@ -65,5 +69,9 @@ data class Course(
     val id: Long,
     val type: String
 ) {
+    /**
+     * Default constructor is required by Firestore.
+     */
+    @Suppress("unused")
     constructor() : this("", "", "", "", 0, "")
 }
