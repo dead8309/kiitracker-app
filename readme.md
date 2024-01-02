@@ -1,7 +1,13 @@
-# KIITracker
+<div align="center">
+    <img src="/assets/logo.png" alt="logo">
+</div>
+<br>
 
-Welcome to KIITracker, your go-to app for simplifying and personalizing class schedules at KIIT
-University!
+<div align="center">
+<h1>KIITracker</h1>
+<h4>Welcome to KIITracker, your go-to app for simplifying and personalizing class schedules at KIIT
+University!</h4>
+</div>
 
 ## Table of Contents
 
