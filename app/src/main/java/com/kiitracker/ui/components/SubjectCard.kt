@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kiitracker.domain.Campus
 import com.kiitracker.ui.components.subjects.SubjectClassWithDirectionsCard
 import com.kiitracker.ui.components.subjects.SubjectTimeSlot
 import com.kiitracker.ui.components.subjects.SubjectTitle
@@ -42,8 +41,8 @@ fun SubjectCard(
     onSelect: () -> Unit = {},
     title: String = "BME-08",
     timeSlot: String = "8:00 - 9:00",
-    `class`: String = "CL-1",
-    campus: Campus = Campus.Campus12,
+    classRoom: String = "CL-1",
+    campus: String = "Campus12",
 ) {
     val arrowIconState by animateFloatAsState(
         targetValue = if (selected) 180f else 0f,
@@ -100,21 +99,20 @@ fun SubjectCard(
                     arrowIconState = arrowIconState
                 )
             }
-            if (selected) {
+            if (selected ) {
                 SubjectClassWithDirectionsCard(
-                    `class` = `class`,
-                    campus = campus.toString(),
-                    onDirectionsIconClicked = {
-                        val gmmIntentUri = Uri.parse("google.navigation:q=Kiit,${campus.name}&mode=w")
-                        Toast.makeText(context, "Opening ${campus.name}", Toast.LENGTH_SHORT).show()
-                        val mapIntent = Intent().apply {
-                            action = Intent.ACTION_VIEW
-                            data = gmmIntentUri
-                            setPackage("com.google.android.apps.maps")
-                        }
-                        context.startActivity(mapIntent)
+                    `class` = classRoom,
+                    campus = campus
+                ) {
+                    val gmmIntentUri = Uri.parse("google.navigation:q=Kiit+University,$campus&mode=w")
+                    Toast.makeText(context, "Opening $campus", Toast.LENGTH_SHORT).show()
+                    val mapIntent = Intent().apply {
+                        action = Intent.ACTION_VIEW
+                        data = gmmIntentUri
+                        setPackage("com.google.android.apps.maps")
                     }
-                )
+                    context.startActivity(mapIntent)
+                }
             }
         }
     }

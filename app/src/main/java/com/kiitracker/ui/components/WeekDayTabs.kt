@@ -4,9 +4,11 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
+import java.util.Locale
 
-val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+val days = listOf("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
 
 @Composable
 fun WeekDayTab(
@@ -19,7 +21,7 @@ fun WeekDayTab(
     ) {
         days.forEachIndexed { index, s ->
             Tab(
-                text = { Text(text = s) },
+                text = { Text(text = s.formatDay()) },
                 selected = index == selectedDay,
                 onClick = {
                     onDaySelected(index)
@@ -27,4 +29,10 @@ fun WeekDayTab(
             )
         }
     }
+}
+
+private fun String.formatDay(): String {
+    return replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString()
+    }.take(3)
 }

@@ -1,9 +1,6 @@
 package com.kiitracker
 
-import com.kiitracker.data.A16Routine
-import com.kiitracker.domain.DailySchedule
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Test
 
@@ -15,6 +12,6 @@ class DailyScheduleTest {
         routine.buildRoutine()*/
         val json = Json { prettyPrint = true }
         //println(A16Routine.weeklyRoutine)
-        println(json.encodeToString(A16Routine.weeklyRoutine))
+//        println(json.encodeToString(A16Routine.weeklyRoutine))
     }
 }

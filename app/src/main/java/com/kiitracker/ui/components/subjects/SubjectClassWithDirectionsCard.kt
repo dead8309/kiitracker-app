@@ -41,47 +41,49 @@ fun SubjectClassWithDirectionsCard(
             ),
             modifier = Modifier
         )
-        Surface(
-            modifier = Modifier
-                .padding(8.dp)
-                .clip(CircleShape)
-                .border(
-                    width = 1.6.dp,
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = CircleShape
-                )
-                .padding(1.5.dp)
-                .clickable {
-                    onDirectionsIconClicked()
-                }
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(2.dp)
-            ) {
-                Text(
-                    text = campus,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.secondary
-                    ),
-                    modifier = Modifier.padding(start = 6.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clip(CircleShape)
-                        .background(
-                            MaterialTheme.colorScheme.secondaryContainer
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Directions,
-                        contentDescription = "Directions",
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+        if (campus.isNotEmpty()) {
+            Surface(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clip(CircleShape)
+                    .border(
+                        width = 1.6.dp,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = CircleShape
                     )
+                    .padding(1.5.dp)
+                    .clickable {
+                        onDirectionsIconClicked()
+                    }
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(2.dp)
+                ) {
+                    Text(
+                        text = campus,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.secondary
+                        ),
+                        modifier = Modifier.padding(start = 6.dp)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(
+                                MaterialTheme.colorScheme.secondaryContainer
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Directions,
+                            contentDescription = "Directions",
+                            modifier = Modifier.size(14.dp),
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
                 }
             }
         }
