@@ -52,16 +52,6 @@ fun SignInScreen(
     val description =
         "KIITracker is a convenient schedule tracking app tailored for KIIT University students."
 
-    val context = LocalContext.current
-    LaunchedEffect(key1 = state) {
-        state.signInError?.let { error ->
-            Toast.makeText(
-                context,
-                error,
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
     Scaffold {
         Column(
             modifier = Modifier
@@ -69,30 +59,34 @@ fun SignInScreen(
                 .padding(it)
                 .padding(16.dp, 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(40.dp)
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.studying),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(400.dp)
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(40.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.studying),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(400.dp)
+                )
 
-            Text(
-                text = title,
-                style = MaterialTheme.typography.displayMedium.copy(
-                    fontWeight = FontWeight.W500
-                ),
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.displayMedium.copy(
+                        fontWeight = FontWeight.W500
+                    ),
+                    textAlign = TextAlign.Center
+                )
 
-            Text(
-                text = description,
-                modifier = Modifier.padding(20.dp, 0.dp),
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-
+                Text(
+                    text = description,
+                    modifier = Modifier.padding(20.dp, 0.dp),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(40.dp))
+            }
             Button(
                 onClick = onSignInClick,
                 modifier = Modifier.fillMaxWidth(),
