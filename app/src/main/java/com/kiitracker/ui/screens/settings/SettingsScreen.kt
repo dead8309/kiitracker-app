@@ -1,5 +1,6 @@
 package com.kiitracker.ui.screens.settings
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Report
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -94,7 +97,7 @@ fun SettingsScreen(
             }
             item { Spacer(modifier = Modifier.height(16.dp)) }
             item { Divider() }
-            item { RoutineSection() }
+            item { RoutineSection(user = user) }
             item { Spacer(modifier = Modifier.height(16.dp)) }
             item { Divider() }
             item { TroubleShootSection() }
@@ -165,7 +168,17 @@ fun AccountSection(
 }
 
 @Composable
-fun RoutineSection() {
+fun RoutineSection(
+    user: UserData?
+) {
+    val routineUrl = "${Config.SITE_URL}/dashboard?routine=${user?.uid}"
+    val shareRoutineIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, Config.shareRoutineContent(routineUrl))
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(shareRoutineIntent, null)
+    val ctx = LocalContext.current
     val handler = LocalUriHandler.current
     Section(
         title = "Routine",
@@ -177,6 +190,15 @@ fun RoutineSection() {
                 description = "Edit your routine",
                 onClick = {
                     handler.openUri("${Config.SITE_URL}/dashboard")
+                },
+                modifier = Modifier.clip(RoundedCornerShape(15.dp))
+            )
+            SettingItem(
+                icon = Icons.Default.Share,
+                title = "Share Routine",
+                description = "Share your routine with others",
+                onClick = {
+                    ctx.startActivity(shareIntent)
                 },
                 modifier = Modifier.clip(RoundedCornerShape(15.dp))
             )
