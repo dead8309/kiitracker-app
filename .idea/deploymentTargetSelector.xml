@@ -4,13 +4,13 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2023-12-22T13:36:28.272072400Z">
+        <DropdownSelection timestamp="2024-01-04T17:36:43.923418300Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="FirebaseDirectAccess" identifier="reservation=projects/kiitracker/deviceSessions/session-33kkx4s1rd3j8" />
+              <DeviceId pluginId="FirebaseDirectAccess" identifier="reservation=projects/kiitracker/deviceSessions/session-12niirknxca7o" />
             </handle>
             <template>
-              <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=husky" />
+              <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=redfin" />
             </template>
           </Target>
         </DropdownSelection>

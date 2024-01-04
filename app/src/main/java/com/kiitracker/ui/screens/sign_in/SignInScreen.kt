@@ -59,8 +59,7 @@ fun SignInScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(40.dp)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.studying),
@@ -76,13 +75,12 @@ fun SignInScreen(
                     ),
                     textAlign = TextAlign.Center
                 )
-
+                Spacer(modifier = Modifier.height(25.dp))
                 Text(
                     text = description,
                     modifier = Modifier.padding(20.dp, 0.dp),
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(40.dp))
             }
             Button(
                 onClick = onSignInClick,
