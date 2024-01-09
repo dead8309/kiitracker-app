@@ -6,7 +6,7 @@
 <div align="center">
 <img src="https://img.shields.io/badge/Minimum%20SDK-23-%23?&style=flat-square&color=7FDA95">
 
-<img src="https://img.shields.io/github/downloads/dead8309/Kizzy/total?&style=flat-square&color=7FDA95">
+<img src="https://img.shields.io/github/downloads/dead8309/kiitracker-app/total?&style=flat-square&color=7FDA95">
 
 <a href="https://github.com/dead8309/kiitracker-app/releases/latest">
 <img alt="Release" src="https://img.shields.io/github/v/release/dead8309/kiitracker-app?&style=flat-square&color=7FDA95&display_name=release">
