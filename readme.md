@@ -4,6 +4,20 @@
 <br>
 
 <div align="center">
+<img src="https://img.shields.io/badge/Minimum%20SDK-23-%23?&style=flat-square&color=7FDA95">
+
+<img src="https://img.shields.io/github/downloads/dead8309/kiitracker-app/total?&style=flat-square&color=7FDA95">
+
+<a href="https://github.com/dead8309/kiitracker-app/releases/latest">
+<img alt="Release" src="https://img.shields.io/github/v/release/dead8309/kiitracker-app?&style=flat-square&color=7FDA95&display_name=release">
+</a>
+
+<img src="https://img.shields.io/badge/kotlin-grey.svg?logo=kotlin&logoColor=7FDA95&style=flat-square">
+
+<img src="https://img.shields.io/badge/Android_Studio-grey?logo=android-studio&logoColor=7FDA95&style=flat-square">
+
+<img src="https://dcbadge.vercel.app/api/shield/888890990956511263?style=flat-square&compact=true">
+
 <h1>KIITracker</h1>
 <h4>Welcome to KIITracker, your go-to app for simplifying and personalizing class schedules at KIIT
 University!</h4>
