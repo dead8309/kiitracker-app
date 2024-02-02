@@ -4,14 +4,11 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-01-04T17:36:43.923418300Z">
+        <DropdownSelection timestamp="2024-01-08T13:21:27.627912700Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="FirebaseDirectAccess" identifier="reservation=projects/kiitracker/deviceSessions/session-12niirknxca7o" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=98432ae" />
             </handle>
-            <template>
-              <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=redfin" />
-            </template>
           </Target>
         </DropdownSelection>
         <DialogSelection />

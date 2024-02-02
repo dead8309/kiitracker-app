@@ -3,6 +3,7 @@ package com.kiitracker.ui.screens.settings
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,16 +18,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Class
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -45,12 +49,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.kiitracker.BuildConfig
 import com.kiitracker.Config
+import com.kiitracker.data.local.Prefs
 import com.kiitracker.domain.models.UserData
 import com.kiitracker.ui.components.dialog.LogoutDialog
 import com.kiitracker.ui.components.icons.Github
 import com.kiitracker.ui.components.settings.Section
 import com.kiitracker.ui.components.settings.SectionTitle
 import com.kiitracker.ui.components.settings.SettingItem
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,7 +94,9 @@ fun SettingsScreen(
         }
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(paddingValues)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             item {
                 AccountSection(
@@ -130,8 +138,7 @@ fun AccountSection(
                     .clickable {
                         showLogoutDialog = true
                     }
-                    .padding(10.dp)
-                ,
+                    .padding(10.dp),
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
             ) {
                 AsyncImage(
@@ -171,6 +178,7 @@ fun AccountSection(
 fun RoutineSection(
     user: UserData?
 ) {
+    var openSaturdayRoutineChooserDialog by remember { mutableStateOf(false) }
     val routineUrl = "${Config.SITE_URL}/dashboard?routine=${user?.uid}"
     val shareRoutineIntent: Intent = Intent().apply {
         action = Intent.ACTION_SEND
@@ -202,8 +210,22 @@ fun RoutineSection(
                 },
                 modifier = Modifier.clip(RoundedCornerShape(15.dp))
             )
+            SettingItem(
+                icon = Icons.Default.Class,
+                title = "Saturday Routine",
+                description = "Set your Saturday routine",
+                onClick = {
+                    openSaturdayRoutineChooserDialog = true
+                },
+                modifier = Modifier.clip(RoundedCornerShape(15.dp))
+            )
         }
     )
+    if (openSaturdayRoutineChooserDialog) {
+        SaturdayRoutineChooserDialog(
+            onDismiss = { openSaturdayRoutineChooserDialog = false }
+        )
+    }
 }
 
 @Composable
@@ -275,6 +297,77 @@ fun AboutSection() {
     )
 }
 
+@Composable
+fun SaturdayRoutineChooserDialog(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit = {}
+) {
+    var selectedDay by remember { mutableStateOf(Prefs[Prefs.SATURDAY_KEY, "saturday"]) }
+
+    val selectableOptions =
+        listOf("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "No Class")
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Column {
+                Text(
+                    text = "Saturday Routine",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Text(
+                    text = "Choose your Saturday routine",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.surfaceTint
+                    )
+                )
+            }
+
+        },
+        text = {
+            LazyColumn {
+                selectableOptions.forEach { day ->
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedDay = day
+                                    Prefs[Prefs.SATURDAY_KEY] = day
+                                    onDismiss()
+                                },
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = day.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(Locale.ROOT)
+                                    else it.toString()
+                                },
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.surfaceTint
+                                ),
+                                modifier = Modifier.padding(8.dp)
+                            )
+                            RadioButton(
+                                selected = day == selectedDay,
+                                onClick = {
+                                    selectedDay = day
+                                    Prefs[Prefs.SATURDAY_KEY] = day
+                                    onDismiss()
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        modifier = modifier
+    )
+}
+
 @Preview
 @Composable
 fun PreviewSettingsScreen() {
@@ -287,5 +380,6 @@ fun PreviewSettingsScreen() {
     SettingsScreen(
         user = user
     )
+    SaturdayRoutineChooserDialog()
 }
 

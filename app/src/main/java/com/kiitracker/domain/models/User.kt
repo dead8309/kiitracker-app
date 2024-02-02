@@ -1,5 +1,6 @@
 package com.kiitracker.domain.models
 
+import com.kiitracker.data.local.Prefs
 import java.util.Date
 
 /**
@@ -40,7 +41,17 @@ data class Routine(
 ) {
     operator fun get(s: String): List<Course> {
         return when (s) {
-            "saturday" -> saturday
+            "saturday" -> {
+                when (Prefs[Prefs.SATURDAY_KEY, "saturday"]) {
+                    "saturday" -> saturday
+                    "tuesday" -> tuesday
+                    "thursday" -> thursday
+                    "wednesday" -> wednesday
+                    "friday" -> friday
+                    "monday" -> monday
+                    else -> emptyList()
+                }
+            }
             "tuesday" -> tuesday
             "thursday" -> thursday
             "wednesday" -> wednesday
