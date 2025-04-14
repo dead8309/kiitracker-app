@@ -12,3 +12,12 @@
 -keep class androidx.credentials.playservices.** {
   *;
 }
+
+# Keep DataStore fields
+-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite* {
+   <fields>;
+}
+
+-dontwarn com.google.rpc.Status
+-dontwarn com.google.type.LatLng$Builder
+-dontwarn com.google.type.LatLng

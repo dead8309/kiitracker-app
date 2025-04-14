@@ -1,8 +1,8 @@
-package com.kiitracker.data.db
+package com.kiitracker.data.remote
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.toObject
 import com.kiitracker.domain.interfaces.Auth
 import com.kiitracker.domain.models.User
 import com.kiitracker.ext.addSnapshotListenerFlow
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FireStoreDB @Inject constructor(
+class UserRemoteDataSource @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: Auth
 ) {

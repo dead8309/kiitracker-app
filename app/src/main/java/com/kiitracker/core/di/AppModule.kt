@@ -1,16 +1,21 @@
-package com.kiitracker.di
+package com.kiitracker.core.di
 
 import android.content.Context
 import androidx.credentials.CredentialManager
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
+import com.google.firebase.Firebase
 import com.kiitracker.R
+import com.kiitracker.core.data.datastore.UserPreferencesSerializer
+import com.kiitracker.core.datastore.proto.UserPreferences
 import com.kiitracker.data.auth.AuthHandler
-import com.kiitracker.data.db.FireStoreDB
+import com.kiitracker.data.remote.UserRemoteDataSource
 import com.kiitracker.data.repository.UserRepositoryImpl
 import com.kiitracker.domain.interfaces.Auth
 import com.kiitracker.domain.repository.UserRepository
@@ -19,6 +24,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -35,7 +42,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesUserRepository(db: FireStoreDB): UserRepository {
+    fun providesUserRepository(db: UserRemoteDataSource): UserRepository {
         return UserRepositoryImpl(db)
     }
 
@@ -49,9 +56,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesSignInWithGoogleOption(@ApplicationContext context: Context) = GetSignInWithGoogleOption
-        .Builder(context.getString(R.string.web_client_id))
-        .build()
+    fun providesSignInWithGoogleOption(@ApplicationContext context: Context) =
+        GetSignInWithGoogleOption
+            .Builder(context.getString(R.string.web_client_id))
+            .build()
 
     @Provides
     @Singleton
@@ -74,4 +82,20 @@ object AppModule {
             auth
         )
     }
+
+    @Provides
+    @Singleton
+    fun providesUserPreferencesDataStore(
+        @ApplicationContext context: Context,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        @ApplicationScope scope: CoroutineScope,
+        userPreferencesSerializer: UserPreferencesSerializer
+    ): DataStore<UserPreferences> =
+        DataStoreFactory.create(
+            serializer = userPreferencesSerializer,
+            scope = CoroutineScope(scope.coroutineContext + ioDispatcher),
+            migrations = listOf()
+        ) {
+            context.dataStoreFile("user_prefs.pb")
+        }
 }

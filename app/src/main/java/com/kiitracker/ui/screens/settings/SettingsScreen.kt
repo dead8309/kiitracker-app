@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,17 +18,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Class
 import androidx.compose.material.icons.filled.Mail
-import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -49,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.kiitracker.BuildConfig
 import com.kiitracker.Config
-import com.kiitracker.data.local.Prefs
 import com.kiitracker.domain.models.UserData
 import com.kiitracker.ui.components.dialog.LogoutDialog
 import com.kiitracker.ui.components.icons.Github
@@ -62,8 +63,10 @@ import java.util.Locale
 @Composable
 fun SettingsScreen(
     user: UserData?,
+    state: SettingsUiState,
     onNavigateBack: () -> Unit = {},
-    onLogoutClicked: () -> Unit = {}
+    onLogoutClicked: () -> Unit = {},
+    onSaturdayPrefChanged: (String) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -76,7 +79,7 @@ fun SettingsScreen(
                 },
                 navigationIcon = {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Go Back",
                         modifier = Modifier
                             .padding(5.dp)
@@ -93,25 +96,40 @@ fun SettingsScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            item {
-                AccountSection(
-                    user = user, onLogoutClicked = onLogoutClicked
-                )
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-            item { Divider() }
-            item { RoutineSection(user = user) }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-            item { Divider() }
-            item { TroubleShootSection() }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-            item { Divider() }
-            item { AboutSection() }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                item {
+                    AccountSection(
+                        user = user, onLogoutClicked = onLogoutClicked
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                item { HorizontalDivider() }
+                item { RoutineSection(
+                    user = user,
+                    currentSaturdayPref = state.saturdayPreference,
+                    onSaturdayPrefChanged = onSaturdayPrefChanged
+                ) }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                item { HorizontalDivider() }
+                item { TroubleShootSection() }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                item { HorizontalDivider() }
+                item { AboutSection() }
+            }
         }
     }
 }
@@ -176,7 +194,9 @@ fun AccountSection(
 
 @Composable
 fun RoutineSection(
-    user: UserData?
+    user: UserData?,
+    currentSaturdayPref: String,
+    onSaturdayPrefChanged: (String) -> Unit = {}
 ) {
     var openSaturdayRoutineChooserDialog by remember { mutableStateOf(false) }
     val routineUrl = "${Config.SITE_URL}/dashboard?routine=${user?.uid}"
@@ -193,7 +213,7 @@ fun RoutineSection(
         modifier = Modifier.fillMaxWidth(),
         content = {
             SettingItem(
-                icon = Icons.Default.OpenInNew,
+                icon = Icons.AutoMirrored.Filled.OpenInNew,
                 title = "Edit Routine",
                 description = "Edit your routine",
                 onClick = {
@@ -223,7 +243,12 @@ fun RoutineSection(
     )
     if (openSaturdayRoutineChooserDialog) {
         SaturdayRoutineChooserDialog(
-            onDismiss = { openSaturdayRoutineChooserDialog = false }
+            currentSelection = currentSaturdayPref,
+            onDismiss = { openSaturdayRoutineChooserDialog = false },
+            onDaySelected = { day ->
+                onSaturdayPrefChanged(day)
+                openSaturdayRoutineChooserDialog = false
+            }
         )
     }
 }
@@ -300,10 +325,10 @@ fun AboutSection() {
 @Composable
 fun SaturdayRoutineChooserDialog(
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit = {}
+    currentSelection: String,
+    onDismiss: () -> Unit = {},
+    onDaySelected: (String) -> Unit = {}
 ) {
-    var selectedDay by remember { mutableStateOf(Prefs[Prefs.SATURDAY_KEY, "saturday"]) }
-
     val selectableOptions =
         listOf("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "No Class")
     AlertDialog(
@@ -333,9 +358,7 @@ fun SaturdayRoutineChooserDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    selectedDay = day
-                                    Prefs[Prefs.SATURDAY_KEY] = day
-                                    onDismiss()
+                                    onDaySelected(day)
                                 },
                             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -351,11 +374,9 @@ fun SaturdayRoutineChooserDialog(
                                 modifier = Modifier.padding(8.dp)
                             )
                             RadioButton(
-                                selected = day == selectedDay,
+                                selected = day == currentSelection,
                                 onClick = {
-                                    selectedDay = day
-                                    Prefs[Prefs.SATURDAY_KEY] = day
-                                    onDismiss()
+                                    onDaySelected(day)
                                 }
                             )
                         }
@@ -378,8 +399,16 @@ fun PreviewSettingsScreen() {
         uid = ""
     )
     SettingsScreen(
-        user = user
+        user = user,
+        state = SettingsUiState(),
+        onNavigateBack = {},
+        onLogoutClicked = {},
+        onSaturdayPrefChanged = {}
     )
-    SaturdayRoutineChooserDialog()
+    SaturdayRoutineChooserDialog(
+        currentSelection = "monday",
+        onDismiss = {},
+        onDaySelected = {}
+    )
 }
 

@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+option java_package = "com.kiitracker.core.datastore.proto";
+option java_multiple_files = true;
+
+message UserPreferences {
+  string saturday_routine_override_day = 1;
+}

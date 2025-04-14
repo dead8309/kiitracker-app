@@ -1,9 +1,10 @@
 package com.kiitracker.ui.screens.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,7 +13,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.kiitracker.domain.models.Course
 import com.kiitracker.domain.models.Routine
 import com.kiitracker.domain.models.UserData
 import com.kiitracker.ui.components.SubjectCard
@@ -38,11 +45,11 @@ import com.kiitracker.ui.components.days
 import com.kiitracker.ui.theme.AppTheme
 import java.util.Calendar
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     user: UserData?,
-    routine: Routine? = Routine(),
+    state: HomeUiState,
     onNavigateToSettings: () -> Unit = {},
 ) {
     Scaffold(
@@ -60,7 +67,7 @@ fun HomeScreen(
                     }) {
                         AsyncImage(
                             modifier = Modifier
-                                    .size(52.dp)
+                                .size(52.dp)
                                 .border(
                                     2.dp,
                                     MaterialTheme.colorScheme.secondaryContainer,
@@ -108,28 +115,61 @@ fun HomeScreen(
                 var selectedCourse by remember {
                     mutableIntStateOf(-1)
                 }
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(10.dp)
-                ) {
-                    if (routine == null) {
-                        return@LazyColumn
+                when (state) {
+                    HomeUiState.Loading -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp),
+                            contentAlignment = androidx.compose.ui.Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
-                    routine[days[it]].forEachIndexed { index, course ->
-                        item(key = course.id) {
-                            SubjectCard(
-                                selected = selectedCourse == index,
-                                onSelect = {
-                                    selectedCourse =
-                                        if (selectedCourse == index) -1
-                                        else index
-                                },
-                                title = course.course,
-                                timeSlot = course.timeSlot,
-                                classRoom = course.classRoom,
-                                campus = course.campus,
-                            )
+
+                    is HomeUiState.Error -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp),
+                            contentAlignment = androidx.compose.ui.Alignment.Center
+                        ) {
+                            Row {
+                                Icon(
+                                    imageVector = Icons.Default.ErrorOutline,
+                                    contentDescription = "Error",
+                                    tint = MaterialTheme.colorScheme.onError,
+                                )
+                                Text(
+                                    text = state.message,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
+                    }
+
+                    is HomeUiState.Success -> {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp)
+                        ) {
+                            state.routine[days[it]].forEachIndexed { index, course ->
+                                item(key = course.id) {
+                                    SubjectCard(
+                                        selected = selectedCourse == index,
+                                        onSelect = {
+                                            selectedCourse =
+                                                if (selectedCourse == index) -1
+                                                else index
+                                        },
+                                        title = course.course,
+                                        timeSlot = course.timeSlot,
+                                        classRoom = course.classRoom,
+                                        campus = course.campus,
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -139,16 +179,54 @@ fun HomeScreen(
 }
 
 
+private val user = UserData(
+    username = "John Doe",
+    email = "",
+    uid = "",
+    photoUrl = ""
+)
+
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun HomeScreenPreview() {
-    val user = UserData(
-        username = "John Doe",
-        email = "",
-        uid = "",
-        photoUrl = ""
-    )
+fun HomeScreenLoadingPreview() {
     AppTheme {
-        HomeScreen(user)
+        HomeScreen(
+            user = user,
+            state = HomeUiState.Loading
+        )
+    }
+}
+
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun HomeScreenErrorPreview() {
+    AppTheme {
+        HomeScreen(
+            user = user,
+            state = HomeUiState.Error("Error Loading Data")
+        )
+    }
+}
+
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun HomeScreenSuccessPreview() {
+    AppTheme {
+        HomeScreen(
+            user = user,
+            state = HomeUiState.Success(
+                routine = Routine(
+                    monday = listOf(
+                        Course().copy(
+                            id = 1,
+                            course = "Mathematics",
+                            timeSlot = "9:00 AM - 10:00 AM",
+                            classRoom = "Room 101",
+                            campus = "Campus 1"
+                        )
+                    )
+                )
+            )
+        )
     }
 }
